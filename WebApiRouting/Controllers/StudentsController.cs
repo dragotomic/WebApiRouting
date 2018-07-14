@@ -28,10 +28,24 @@ namespace WebApiRouting.Controllers
             return Request.CreateResponse(HttpStatusCode.Found, student);
         }
 
-        [Route("{name}")]
+        [Route("{name}", Name = "GetStudentById")]
         public Student Get(string name)
         {
             return Student.Students.FirstOrDefault(s => s.Name.ToLower() == name.ToLower());
+        }
+
+        [Route("")]
+        public IHttpActionResult PostStudent(Student student)
+        {
+            if (ModelState.IsValid)
+            {
+                Student.Students.Add(student);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("Model is not valid");
+            }
         }
 
         [Route("{id:int:min(0)}/courses")]
@@ -54,7 +68,7 @@ namespace WebApiRouting.Controllers
             {
                 return Content(HttpStatusCode.NotFound, "Teacher not found"); //NotFound();
             }
-            return Ok(teacher);
+            return Content(HttpStatusCode.OK, teacher); // Ok(teacher);
         }
     }
 }
